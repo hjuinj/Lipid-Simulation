@@ -1,0 +1,110 @@
+#!/usr/bin/env python
+import numpy as np
+import MDAnalysis
+import matplotlib.pyplot as plt
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    import pandas as pd
+import subprocess, os, StringIO, re, datetime, time, sys
+import optparse
+
+# dir_pep = '/home/shuzhe/Sandbox/build/insert/peptide_solvated_boxsize.gro'
+# dir_dppc = '/home/shuzhe/Sandbox/build/insert/dppc128_whole.gro'
+# dir_combined  = '/home/shuzhe/Sandbox/build/insert/dppc+peptide_new.gro'
+
+def a2n(length):    return length / 10.0
+
+def parse():
+    parser = optparse.OptionParser()
+    parser.add_option("-f", dest="file")
+    parser.add_option("-d", dest="direction", default = "z")
+    parser.add_option('-o', dest="output_file", default = "./output.gro")
+    (options, args ) = parser.parse_args()
+    return options
+
+############## Combine Lipid and peptide ####################################
+# Peptide above lipid
+# DPPC should have a pbc box surronding it, this is needed
+
+def make_consec_res(u, counter = 1):
+    """
+    Resid will start from 1 and run consecutively upto the total number of residue
+
+    Examples:
+    2 2 4 4
+    """
+    copy = u.residues.resids
+    # print copy
+    previous = copy[0]
+    for c in range(len(copy)):
+        current = copy[c]
+        if current != previous:
+            counter += 1
+            previous = current
+        copy[c] = counter
+    u.residues.set_resids(copy)
+    return u
+
+def reorder(atoms1, atoms2):
+    """
+    Will lose the box
+    """
+    u_comb = MDAnalysis.Merge(atoms1, atoms2)
+    u_comb = make_consec_res(u_comb)
+    return u_comb
+
+def concat(u1, u2):
+    u_comb = MDAnalysis.Merge(u1, u2)
+    p1 = u_comb.select_atoms("bynum 1:%s" %str(len(u1)))
+    p2 = u_comb.select_atoms("bynum %s:%s" %(str(len(u1) + 1), str(len(u1) + len(u2))))
+    p1.segids = "A"
+    p2.segids = "B"
+    p2.residues.set_resid(p2.residues.resids + p1.residues.resids[-1])
+    return u_comb
+
+dimensions = {"x" : 0, "y" : 1,"z" : 2}
+
+def flip(peptide, dim = "z"):
+    """
+    Reuqires pbc box to be defined for both the input lipid and peptide configuration
+    """
+    xyz = peptide.atoms.positions
+    xyz[ : ,dimensions[dim]] *= -1
+    peptide.atoms.positions = xyz
+    return peptide
+
+
+options = parse()
+lipid, combined = options.file, options.output_file
+start = MDAnalysis.Universe(lipid)
+
+# peptide = MDAnalysis.Universe("out.gro")
+start = flip(start, options.direction)
+start.atoms.write(combined)
+print "Add lipid.itp entries in topology file"
+
+##############################################################################
+"""
+For topological file
+"""
+# def unique_ordered(seq):
+#     seen = set()
+#     seen_add = seen.add
+#     return [x for x in seq if not (x in seen or seen_add(x))]
+# u = MDAnalysis.Universe(combined)
+# # types = np.unique(u.atoms.resnames)
+# types = unique_ordered(u.atoms.resnames)
+# # len(u.atoms)
+# os.system("cp topol.top init_topol.top")
+# f = open("topol.top", "a")
+# print "MODIFIY THE TOPOLOGY FILE!!!"
+# for i in types:
+#     tmp = u.select_atoms("resname " + str(i))
+#     print i + "\t" + str(tmp.n_residues)
+#     f.write(i + "\t" + str(tmp.n_residues) + "\n")
+# print f.readlines()[-1]
+# f.close()
+#
+# os.system("mv topol.top ../Input/topol.top")
+# os.system("mv init_topol.top topol.top")

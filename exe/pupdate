@@ -1,0 +1,122 @@
+#!/usr/bin/env python
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    import pandas as pd
+
+import numpy as np
+import subprocess, os, StringIO, re, datetime, time, sys
+import optparse
+# import csv
+"""
+TODOs:
+    - Allow sweeping of multiple log files to find the right entry
+	-  Test the new version of qstat(done)
+	- CHANGE the qstat in every other file!!!!!!!!!!!! (done)
+
+
+"""
+# COLNAMES = ["JobId", "JobPath", "SubmittedTime", "UpdatedTime", "Status"]
+
+def parse():
+    parser = optparse.OptionParser()
+    # parser.add_option('-f', dest="file")
+    # parser.add_option('-d', dest="dir", default= "./Input/")
+    parser.add_option('-l', dest="log", default = "$HOME/Logs/default_log")
+    parser.add_option("-s", action="store_true", dest="silence") #silence
+    (options, args ) = parser.parse_args()
+    return options
+
+def add_readme(line = "", path = "./"):
+    line = line + "\n"
+    f = open(path + "/README", "a")
+    f.write(line)
+    f.close()
+
+def update():
+    options = parse()
+    qinfo = qstat()
+    log_path = os.path.expandvars(options.log)
+    try:
+        df = pd.read_csv(log_path, sep = "\t", header = 0, index_col = 0)
+        df.index = range(len(df.index))
+    except IOError:
+        subprocess.call("qstat")
+        print "No Log Found"
+        return
+
+    df = update_log(qinfo, df)
+
+    df.to_csv(log_path, sep = "\t", index = True, header = True)
+    if options.silence is None:
+        subprocess.call(["qstat", "-a"])
+
+def update_log(qinfo, df):
+    jobids = []
+    path, readme_locations = [], [] # these are for README Modification
+    current_time = time.strftime("%y-%m-%d|%H:%M")
+    for line in qinfo:
+        jobid = line[0]
+        status = line[-2]
+        #README Modificaiton
+        # NEED TO PROCEED delete_log otherwise nothing will be added to README anymore
+        path += list(df.JobPath[(df.JobId == jobid) & (df.Status != status)])
+
+        df.Status[(df.JobId == jobid) & (df.Status != status)] = status
+        df.UpdatedTime[df.JobId == jobid] = current_time
+        jobids.append(jobid)
+    # df.Status[((df.Status == "Q") | (df.Status == "R")) & (~df.JobId.isin(jobids))] = "F"
+    # df.UpdatedTime[((df.Status == "Q") | (df.Status == "R")) & (~df.JobId.isin(jobids))] = current_time
+
+    # README changes
+    path += list(df.JobPath[((df.Status == "Q") | (df.Status == "R")) & (~df.JobId.isin(jobids))])
+    readme_locations += [i[0 : i.find("Input")]  for i in path]
+    try:
+        #TODO NOT SURE IF THIS IS RIGHT
+        map(add_readme, ["- STATUS: %s finished %s" %(i, time.strftime("%y-%m-%d|%H:%M")) for i in path], readme_locations)
+    except IOError:
+        pass
+    df.loc[((df.Status == "Q") | (df.Status == "R")) & (~df.JobId.isin(jobids)), ["Status", "UpdatedTime"]] = ["F", current_time]
+    return df
+
+def qstat(jobid=None, full=False):
+    """Return the stdout of qstat minus the header lines.
+
+       By default, 'username' is set to the current user.
+       'full' is the '-f' option
+       'id' is a string or list of strings of job ids
+
+       Returns the text of qstat, minus the header lines
+    """
+
+    # set options
+    opt = ["qstat"]
+    if full == True:
+        opt += ["-f"]
+    if jobid != None:
+        if isinstance(jobid,str) or isinstance(jobid,unicode):
+            jobid = [jobid]
+        elif isinstance(jobid,list):
+            pass
+        else:
+            print "Error in pbs.misc.qstat(). type(jobid):", type(jobid)
+            sys.exit()
+        opt += jobid
+
+    # call 'qstat' using subprocess
+    p = subprocess.Popen(opt, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    stdout,stderr = p.communicate()
+
+    sout = StringIO.StringIO(stdout)
+    # strip the header lines
+    if full == False:
+        for line in sout:
+            if line[0] == "-":
+                break
+
+    # return the remaining text
+    output =  sout.read().split("\n")[:-1]
+    output = [line.split() for line in output]
+    return output
+
+update()

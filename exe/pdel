@@ -1,0 +1,136 @@
+#!/usr/bin/env python
+
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    import pandas as pd
+import subprocess, os, StringIO, re, datetime, time, sys
+import optparse
+
+"""
+TODOs:
+    - update log after deleting file (done)
+    - deletion of specified file (done)
+    - show qstat after each operation unless silenced (done)
+    - update README (done)
+    - deletion by its rank in the qstat list (done)
+    - deletion of files by index in the dataframe and other property fields (done)
+    - allow regex when specifying files to delete
+"""
+
+def add_readme(line = "", path = "./"):
+    line = line + "\n"
+    f = open(path + "/README", "a")
+    f.write(line)
+    f.close()
+
+def parse():
+    parser = optparse.OptionParser()
+    parser.add_option("-a", action="store_true", dest="del_all")
+    parser.add_option("-s", action="store_true", dest="silence") #silence
+    parser.add_option("-f", dest="files")
+    parser.add_option("-i", dest="indices") # the rownumber in the log file
+    parser.add_option("-n", dest="numbers") #the rank in the qstat
+    parser.add_option('-l', dest="log", default = "$HOME/Logs/default_log")
+    (options, args ) = parser.parse_args()
+    return options
+
+def delete_helper(jobids, df):
+    p = subprocess.Popen(["qdel"] + jobids, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    stdout,stderr = p.communicate()
+    #finding where README is and modify it
+    # NEED TO PROCEED delete_log otherwise nothing will be added to README anymore
+    try:
+        path = df.JobPath[(df.JobId.isin(jobids)) & (df.Status != "X")]
+        readme_locations = [i[0 : i.find("Input")]  for i in path]
+        map(add_readme, ["- CANCELLATION: %s on %s" %(i, time.strftime("%y-%m-%d|%H:%M")) for i in path], readme_locations)
+    except IOError:
+        print "Unable to Identify README File Location...\n"
+
+    df = delete_log(jobids, df)
+
+    return df
+
+def delete():
+    options = parse()
+    log_path = os.path.expandvars(options.log)
+    df = pd.read_csv(log_path, sep = "\t", header = 0, index_col = 0)
+    jobids = []
+
+    if options.files is not None:  # When specific file names are given
+        jobids = options.files.strip().split()
+
+    elif options.numbers is not None: # Using the rank of a job in qstat, COUNT STARTS FROM  0 !!!!!
+        jobids = options.numbers.strip().split()
+        # jobids = [int(i) - 1  for i in jobids]
+        jobids = [int(i) for i in jobids]
+        output = qstat()
+        try:
+            jobids = [output[i][0] for i in jobids]
+        except IndexError:
+            print "Cannot Locate Job %d ..." %(i + 1)
+            return
+
+    elif options.indices is not None:
+        jobids = options.indices.strip().split()
+        jobids = [int(i) for i in jobids]
+        jobids = [df.loc[i, "JobId"] for i in jobids]
+
+    elif options.del_all: # Delete all jobs in the queue
+        output = qstat()
+        jobids = [i[0] for i in output]
+
+    df = delete_helper(jobids, df)
+    df.to_csv(log_path, sep = "\t", index = True, header = True)
+
+    if options.silence is None: # Output jobs in the queue in the terminal
+        subprocess.call(["qstat", "-a"])
+
+def delete_log(jobids, df):
+    """
+    !!! the log entry is NOT physically deleted, its status is just changed to "X"
+    """
+    df.Status[(df.JobId.isin(jobids))] = "X"
+    return df
+
+def qstat(jobid=None, full=False):
+    """Return the stdout of qstat minus the header lines.
+
+       By default, 'username' is set to the current user.
+       'full' is the '-f' option
+       'id' is a string or list of strings of job ids
+
+       Returns the text of qstat, minus the header lines
+    """
+
+    # set options
+    opt = ["qstat"]
+    if full == True:
+        opt += ["-f"]
+    if jobid != None:
+        if isinstance(jobid,str) or isinstance(jobid,unicode):
+            jobid = [jobid]
+        elif isinstance(jobid,list):
+            pass
+        else:
+            print "Error in pbs.misc.qstat(). type(jobid):", type(jobid)
+            sys.exit()
+        opt += jobid
+
+    # call 'qstat' using subprocess
+    p = subprocess.Popen(opt, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    stdout,stderr = p.communicate()
+
+    sout = StringIO.StringIO(stdout)
+    # strip the header lines
+    if full == False:
+        for line in sout:
+            if line[0] == "-":
+                break
+
+    # return the remaining text
+    output =  sout.read().split("\n")[:-1]
+    output = [line.split() for line in output]
+    return output
+
+delete()

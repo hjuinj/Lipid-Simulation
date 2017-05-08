@@ -1,0 +1,9 @@
+#!/bin/bash
+
+#echo hello
+if [ $# -eq 1 ]
+then
+  rm -r $1 ; mkdir $1
+  cd $1
+  cp -r /home/shuzhe/Simulations/RESOURCES/DIR_CONSTRUCT/* .
+fi

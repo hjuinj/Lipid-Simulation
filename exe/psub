@@ -1,0 +1,178 @@
+#!/usr/bin/env python
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    import pandas as pd
+import subprocess, os, StringIO, re, datetime, time, sys
+import optparse
+"""
+TODOs:
+    - when submitting jobs check to see if this job has been run in the past
+    - add which q is being submitted to?
+    - parse_pdb file to obtain more info (done)
+    - Submit multiple files by name (done)
+"""
+COLNAMES = ["JobId", "JobPath", "SubmittedTime", "UpdatedTime", "Status", "Metadata"]
+# COLNAMES = ["Index", "JobId", "JobPath", "SubmittedTime", "UpdatedTime", "Status"]
+
+
+def parse():
+    parser = optparse.OptionParser()
+    parser.add_option('-f', dest="file")
+    parser.add_option("-a", action="store_true", dest="sub_all")
+    parser.add_option("-z", action="store_true", dest="sub_all_but")
+    parser.add_option("-s", action="store_true", dest="silence") #silence
+    parser.add_option('-d', dest="dir", default= "./Input/")
+    parser.add_option('-e', dest="extra_args", default= "")
+    parser.add_option('-l', dest="log", default = "$HOME/Logs/default_log")
+    (options, args ) = parser.parse_args()
+    return options
+
+#parse()
+def add_log(to_log, log_path):
+    log_path = os.path.expandvars(log_path)
+    df = pd.DataFrame([to_log], columns = COLNAMES)
+    if os.path.isfile(log_path):
+        df = pd.read_csv(log_path, sep = "\t", header = 0, index_col = 0).append(df, ignore_index = True)
+    # df.to_csv(log_path, sep = "\t", index = False, header = False)
+    df.to_csv(log_path, sep = "\t", index = True, header = True)
+
+    # f = open(log_path, "a")
+    # #print log_path
+    # f.write("\t".join(to_log) + "\n")
+    # f.close()
+
+def parse_pbs(path):
+    #TODO
+    result = {}
+
+def add_readme(line = "", path = "./"):
+    line = line + "\n"
+    f = open(path + "/README", "a")
+    f.write(line)
+    f.close()
+
+
+
+def create_log_obj(stdout, file_path):
+    file_path = os.path.expandvars(file_path)
+    file_path = os.path.abspath(file_path)
+    f = open(file_path, "r")
+    meta_data = [l.strip().split()[-1] for l in f.readlines() if l.startswith("#PBS") and not "walltime" in l]
+    f.close()
+    log_obj = []
+    log_obj.append(stdout.strip()) #jobId
+    log_obj.append(file_path) #file_path
+    time_instance = time.strftime("%y-%m-%d|%H:%M")
+    log_obj.append(time_instance) #time_submitted
+    log_obj.append(time_instance) #time_checked
+    log_obj.append("Q") #time_checked
+    log_obj.append(":".join(meta_data)) #metadata such as num nodes num cpus and name as shown in qstat
+    return log_obj
+
+def submit_one(file_path ):
+    """
+    The @file_path  is always relative to the parent directory to which all the input files reside
+    Submit a job and return a log object to be logged
+    during the function the README is updated
+    """
+    cmd = ["qsub"]
+    cmd.append(file_path)
+    try:
+        p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        stdout, stderr = p.communicate()
+
+        #README Update
+        add_readme("- SUBMISSION: %s on %s" %(file_path, time.strftime("%y-%m-%d|%H:%M")))
+
+        #Create Log
+        log_obj = create_log_obj(stdout, file_path)
+        #TODO adding more details to the log object
+        properties = parse_pbs(file_path)
+
+        return log_obj
+
+    except OSError:
+        print "Failed to Submit\n"
+
+def submit(suffix = ".pbs"):
+    """
+    @suffix is the suffix associated with job files
+    """
+    options = parse()
+    if options.file is not None:
+        files = options.file.strip().split()
+        for f in files:
+            log_obj = submit_one(f)
+            add_log(log_obj, options.log)
+    elif options.sub_all_but:
+        """
+        Search if the job has been submitted, if so ignore
+        """
+        df = None
+        try:
+            log_path = os.path.expandvars(options.log)
+            df = pd.read_csv(log_path, sep = "\t", header = 0, index_col = 0)
+        except IOError:
+            print "No Log Found"
+            return
+
+        for dirpath, dirnames, filenames in os.walk("./"):
+            for filename in [f for f in filenames if f.endswith(suffix)]:
+                full_path = os.path.abspath(os.path.join(dirpath,filename))
+                if sum( (df.JobPath == full_path) & (df.Status != "X")) > 0:
+                    print "%s has been submitted previsouly on %s" %(filename, list(df.SubmittedTime[df.JobPath == full_path]))
+                else:
+                    log_obj =  submit_one(full_path )
+                    add_log(log_obj, options.log)
+    elif options.sub_all:
+        for dirpath, dirnames, filenames in os.walk("./"):
+            for filename in [f for f in filenames if f.endswith(suffix)]:
+                log_obj =  submit_one(os.path.join(dirpath, filename) )
+                add_log(log_obj, options.log)
+
+    if options.silence is None:
+        subprocess.call(["qstat", "-a"])
+
+def qstat(jobid=None, full=False):
+    """Return the stdout of qstat minus the header lines.
+
+       By default, 'username' is set to the current user.
+       'full' is the '-f' option
+       'id' is a string or list of strings of job ids
+
+       Returns the text of qstat, minus the header lines
+    """
+
+    # set options
+    opt = ["qstat"]
+    if full == True:
+        opt += ["-f"]
+    if jobid != None:
+        if isinstance(jobid,str) or isinstance(jobid,unicode):
+            jobid = [jobid]
+        elif isinstance(jobid,list):
+            pass
+        else:
+            print "Error in pbs.misc.qstat(). type(jobid):", type(jobid)
+            sys.exit()
+        opt += jobid
+
+    # call 'qstat' using subprocess
+    p = subprocess.Popen(opt, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    stdout,stderr = p.communicate()
+
+    sout = StringIO.StringIO(stdout)
+    # strip the header lines
+    if full == False:
+        for line in sout:
+            if line[0] == "-":
+                break
+
+    # return the remaining text
+    output =  sout.read().split("\n")[:-1]
+    output = [line.split() for line in output]
+    return output
+
+
+submit()

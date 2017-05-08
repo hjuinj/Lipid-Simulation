@@ -1,0 +1,39 @@
+#!/usr/bin/env python
+
+import numpy as np
+import MDAnalysis
+import matplotlib.pyplot as plt
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    import pandas as pd
+import subprocess, os, StringIO, re, datetime, time, sys
+import optparse
+
+def parse():
+    parser = optparse.OptionParser()
+    parser.add_option("-f", dest="file")
+    parser.add_option('-o', dest="output_file", default = "./output.gro")
+    (options, args ) = parser.parse_args()
+    return options
+
+options = parse()
+u = MDAnalysis.Universe(options.file)
+res = u.atoms.resnames[0]
+counter = 0
+res_size = 0.0
+res_id = u.atoms.resids[0]
+for i in u.atoms:
+    if i.resname == res:
+        counter += 1
+        if i.resid == res_id :
+            res_size += 1
+    else:
+        # print counter, res, int(round(counter/res_size))
+        print res, int(round(counter/res_size))
+        counter = 1
+        res = i.resname
+        res_id = i.resid
+        res_size = 1.0
+# print counter, res, int(round(counter/res_size))
+print res, int(round(counter/res_size))

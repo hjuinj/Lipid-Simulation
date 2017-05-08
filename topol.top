@@ -1,0 +1,50 @@
+;
+;	File 'topol.top' was generated
+;	By user: shuzhe (1006)
+;	On host: ch-bresme-i7-3
+;	At date: Mon Nov  7 14:16:46 2016
+;
+;	This is a standalone topology file
+;
+;	It was generated using program:
+;	pdb2gmx - VERSION 4.6.5
+;
+;	Command line was:
+;	pdb2gmx -f KALP-15_princ.pdb -o KALP-15_processed.gro -ignh -ter -water spc 
+;
+;	Force field was read from the standard Gromacs share directory.
+;
+
+; Include forcefield parameters
+#include "gromos53a6_lipids.ff/forcefield.itp"
+
+
+; Include DPPC chain topology
+#include "gromos53a6_lipids.ff/dppc.itp"
+
+; Include PEP topology
+#include "gromos53a6_lipids.ff/PP75_monomer.itp"
+
+; Include water topology
+#include "gromos53a6_lipids.ff/spc.itp"
+
+#ifdef POSRES_WATER
+; Position restraint for each water oxygen
+[ position_restraints ]
+;  i funct       fcx        fcy        fcz
+   1    1       1000       1000       1000
+#endif
+
+; Include topology for ions
+#include "gromos53a6.ff/ions.itp"
+
+[ system ]
+; Name
+frame t= 1.000 in water
+
+[ molecules ]
+; Compound        #mols
+PEP		1
+SOL             1303
+DPPC		128
+SOL             3655

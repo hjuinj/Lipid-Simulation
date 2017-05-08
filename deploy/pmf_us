@@ -1,0 +1,55 @@
+#!/usr/bin/env python
+import subprocess, os, StringIO, re, datetime, time, sys
+import optparse
+
+"""
+Usage:
+    -
+"""
+
+def parse():
+    parser = optparse.OptionParser()
+    parser.add_option('-d','--dir', dest="directory", default = "./")
+    parser.add_option('-t', dest="tpr", default = "mdrun.tpr")
+    parser.add_option('-p', dest="pullf", default = "pullf.xvg")
+    (options, args ) = parser.parse_args()
+    return options
+
+options = parse()
+
+
+cmd = ["mkdir", options.directory + "/Analysis"]
+subprocess.call(cmd)
+counter = 0
+
+tprs = open(options.directory + "/Analysis/tpr-files.dat", "w")
+for dirpath, dirnames, filenames in os.walk(options.directory):
+    for filename in [f for f in filenames if f == options.tpr]:
+        tprs.write(os.path.abspath(os.path.join(dirpath, filename)))
+        tprs.write("\n")
+        counter += 1
+        # print  os.path.abspath(os.path.join(dirpath,filename))
+tprs.close()
+
+pullfs = open(options.directory + "/Analysis/pullf-files.dat", "w")
+for dirpath, dirnames, filenames in os.walk(options.directory):
+    for filename in [f for f in filenames if f == options.pullf]:
+        pullfs.write(os.path.abspath(os.path.join(dirpath, filename)))
+        pullfs.write("\n")
+
+pullfs.close()
+
+
+# gmx_cmd = ["gmx", "wham"]
+#gmx_cmd = ["gmx", "wham", "-it", options.directory + "/Analysis/tpr-files.dat",  "-if",  options.directory + "/Analysis/pullf-files.dat",  "-o", "-hist", "-unit", "kCal"]
+gmx_cmd = ["gmx", "wham", "-it", options.directory + "/Analysis/tpr-files.dat",  "-if",  options.directory + "/Analysis/pullf-files.dat",  "-o", "-hist", "-unit", "kJ", "-temp", "310",  "-nBootstrap", "700", "-bins", "100"]
+subprocess.call(gmx_cmd)
+
+xmgrace_cmd = ["xmgrace", "-nxy", "histo.xvg"]
+for i in range(1, counter):
+    xmgrace_cmd += ["-bxy", "1:" + str(i +1)]
+subprocess.call(xmgrace_cmd)
+
+subprocess.call("mv *.xvg " + options.directory +  "/Analysis/", shell = True)
+
+#g_wham -if file-pullf.dat -it file-topol.dat -unit kj -temp 323 -hist -sym  -bsres bsResult.xvg -bsprof bsProfs.xvg -nBootstrap 100 -log -min -1.94 -max 1.94 -bins 100 -zprof0 -20.12
