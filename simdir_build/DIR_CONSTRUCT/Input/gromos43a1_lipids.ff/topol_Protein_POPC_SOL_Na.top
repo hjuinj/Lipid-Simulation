@@ -1,0 +1,28 @@
+; topology for 1 alm molecule, 128 popc lipids, water and 1 counter ion
+; alm.itp can be made in a straightforward manner with pdb2gmx, starting
+; with a pdb file of alamethicin.
+; make sure lipid.itp, popc.itp and alm.itp are in a location where
+; grompp can find them (GMXLIB, current directory, or directory given in 
+; the .mdp file with the include option. 
+#include "ffgmx.itp"
+#include "lipid.itp"
+#include "popc.itp"
+#include "alm.itp"
+#include "ions.itp"
+
+#ifdef FLEX_SPC
+#include "flexspc.itp"
+#else
+#include "spc.itp"
+#endif
+
+[ system ]
+; name
+Alm on surf + relaxed popc
+
+[ molecules ]
+; name	number
+Protein 1
+POPC    128
+SOL     3552
+Na      1

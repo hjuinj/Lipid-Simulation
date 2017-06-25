@@ -1,0 +1,20 @@
+; topology for a pure DPPC bilayer with 128 lipids and 3655 SPC water
+; molecules
+#include "ffgmx.itp"
+#include "lipid.itp"
+#include "dppc.itp"
+
+#ifdef FLEX_SPC
+#include "flexspc.itp"
+#else
+#include "spc.itp"
+#endif
+
+[ system ]
+; name
+Pure DPPC bilayer with 128 lipids and 3655 water molecules
+
+[ molecules ]
+; name	number
+DPPC    128
+SOL     3655
