@@ -5,16 +5,6 @@ from MDAnalysis.analysis.rms import rmsd
 
 import optparse
 
-#dir = "/home/shuzhe/Simulations/23week/12.MB0x5_solv_buffer_multi_trj/Output/"
-
-# top = "/home/shuzhe/Simulations/23week/12.MB0x5_solv_buffer_multi_trj/Output/[____].gro"
-# trj = "/home/shuzhe/Simulations/23week/12.MB0x5_solv_buffer_multi_trj/Output/[____].xtc"
-# def align(top_name, trj_name, num_trj, out_name = "tmp"):
-#     ref = MDAnalysis.Universe(top.replace("[____]", top_name))
-#     for i in range(num_trj):
-#         trjectory = MDAnalysis.Universe(top.replace("[____]", top_name), trj.replace("[____]", trj_name + "_" + str(i)))
-#         align =  rms_fit_trj(trjectory, ref, filename=trj.replace("[____]", out_name + "_" + str(i)))
-#
 
 def parse():
     parser = optparse.OptionParser()

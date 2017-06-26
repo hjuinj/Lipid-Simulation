@@ -45,7 +45,7 @@ Contains scripts to build simulation directories with automated construction of 
 
 -  **./topology** *
 
-***Contains the force field parameters for the monomer units of the polymer studied as well as script to concatenate monomers to form polymers.***
+*Contains the force field parameters for the monomer units of the polymer studied as well as script to concatenate monomers to form polymers.*
 
 ---
 

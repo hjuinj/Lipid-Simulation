@@ -36,3 +36,7 @@ Tallies and outputs the molecular ordering in the given configuration files. The
 Given a pulled simulation trajectory along a reaction coordinate, it selects simulation windows at regular distance of separation between the two pulled groups (default 0.2 nm).
 
 ---
+
+- **transformations.py**
+
+A set of functions written by Christoph Gohlke that are mainly used to rotate and rescale difference configurations.
