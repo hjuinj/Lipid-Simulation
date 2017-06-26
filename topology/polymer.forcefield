@@ -1,5 +1,5 @@
 #################################
-# parameters for the base monomers
+# parameters for the base monomers (.rtp)
 #################################
 [ MA1 ]
  [ atoms ]
@@ -235,11 +235,11 @@ CE1  CD1   CZ     C      gi_1
    CD    CE    gb_27
    CE    N1    gb_21
    N1    HN1    gb_2
-    CO     OE1    gb_5  
+    CO     OE1    gb_5
   ;carbonyl group linkage
-   N1    C1    gb_10   
+   N1    C1    gb_10
    C1    OD1    gb_5
-   C1    CF    gb_27  
+   C1    CF    gb_27
   ;phenyl group
 CF   CD1    gb_16
 CF   CD2    gb_16
@@ -326,22 +326,22 @@ CZ    HZ    gb_3
    -C     N    CA     ga_31
     H     N    CA     ga_18
     N    CA    CB     ga_13
-   CB    CA    CO     ga_13  
+   CB    CA    CO     ga_13
     N    CA    CO     ga_13
   CA    CO   OE1     ga_30
    CA    CB    CG     ga_15
    CB    CG    CD     ga_15
    CG    CD    CE     ga_15
    ; carbonyl linking the lysing and benzyl
-   CD    CE    N1     ga_13 
-   CE    N1    HN1     ga_18 
-   CE    N1    C1     ga_31 
-   HN1    N1    C1     ga_32 
-   N1    C1    OD1     ga_33 
-   OD1    C1    CF     ga_30 
-   C1    CF    CD1    ga_27  
-   C1    CF    CD2    ga_27  
-   N1    C1    CF     ga_19  
+   CD    CE    N1     ga_13
+   CE    N1    HN1     ga_18
+   CE    N1    C1     ga_31
+   HN1    N1    C1     ga_32
+   N1    C1    OD1     ga_33
+   OD1    C1    CF     ga_30
+   C1    CF    CD1    ga_27
+   C1    CF    CD2    ga_27
+   N1    C1    CF     ga_19
   ; benzyl group
   CD1    CF   CD2     ga_27
    CF   CD1   HD1     ga_25
@@ -358,8 +358,8 @@ CZ    HZ    gb_3
   CE1    CZ    HZ     ga_25
   CE2    CZ    HZ     ga_25
   ; second carbonyl group
-   CD1    CE1    C    ga_27  
-   CZ     CE1    C    ga_27  
+   CD1    CE1    C    ga_27
+   CZ     CE1    C    ga_27
    CE1    C     O     ga_30
    CE1     C    +N     ga_19
     O     C    +N     ga_33
@@ -397,7 +397,7 @@ CZ    HZ    gb_3
  [ impropers ]
 ;  ai    aj    ak    al   gromos type
     N    -C    CA     H     gi_1
-   CA     N     CO   CB     gi_2   
+   CA     N     CO   CB     gi_2
     ;carbonyl linkage part
     N1   HN1    C1    CE     gi_1
     C1   OD1    N1    CF     gi_1
@@ -434,18 +434,18 @@ CE1  CD1   CZ     C      gi_1
   CO    CA    OE1   N2      gi_1
  [ dihedrals ]
 ;  ai    aj    ak    al   gromos type
-  -CE1    -C     N    CA     gd_14 
-   -C     N    CA     CO    gd_39  
+  -CE1    -C     N    CA     gd_14
+   -C     N    CA     CO    gd_39
     N    CA    CB    CG     gd_34
-   CB    CA    CO   OE1     gd_40    
+   CB    CA    CO   OE1     gd_40
    CA    CB    CG    CD     gd_34
    CB    CG    CD    CE     gd_34
-   CG    CD    CE    N1     gd_34  
-   CE    N1    C1    CF     gd_14  
-   CD    CE    N1    C1     gd_39  
-   N1    C1    CF    CD1    gd_40  
-   CD1   CE1   C     +N     gd_40  
-   H1    N     CA    CB     gd_29  
+   CG    CD    CE    N1     gd_34
+   CE    N1    C1    CF     gd_14
+   CD    CE    N1    C1     gd_39
+   N1    C1    CF    CD1    gd_40
+   CD1   CE1   C     +N     gd_40
+   H1    N     CA    CB     gd_29
    CA    CO    N2    CI     gd_14
    CO     N2    CI     CN     gd_39
     N2    CI    CJ    CK     gd_34
@@ -461,13 +461,13 @@ CE1  CD1   CZ     C      gi_1
    CB   CH2     0.00000     1
    CG   CH2     0.00000     2
    CD   CH2     0.00000     2
-   CE   CH2     0.00000     3  
-   N1     NZ    -0.31000     3 
-   HN1     H     0.31000     3 
-  CO     C     0.33000     4  
-  OE1     O    -0.45000     4 
-  OE2    OA    -0.28800     4 
-  HO2     H     0.40800     4 
+   CE   CH2     0.00000     3
+   N1     NZ    -0.31000     3
+   HN1     H     0.31000     3
+  CO     C     0.33000     4
+  OE1     O    -0.45000     4
+  OE2    OA    -0.28800     4
+  HO2     H     0.40800     4
     ;carbonyl linker between amine and benzene
    C1     C       0.450     5
    OD1     O      -0.450     5
@@ -483,8 +483,8 @@ CE1  CD1   CZ     C      gi_1
    CZ     C    -0.14000     11
    HZ    HC     0.14000     11
    ; carbonyl group
-  C     C       0.450     12 
-  O     O      -0.450     12  
+  C     C       0.450     12
+  O     O      -0.450     12
 
 
  [ bonds ]
@@ -495,15 +495,15 @@ CE1  CD1   CZ     C      gi_1
    CB    CG    gb_27
    CG    CD    gb_27
    CD    CE    gb_27
-   CE    N1    gb_21 
-   N1    HN1    gb_2  
-    CO     OE1    gb_5  
-    CO     OE2    gb_13 
-    OE2   HO2    gb_1   
+   CE    N1    gb_21
+   N1    HN1    gb_2
+    CO     OE1    gb_5
+    CO     OE2    gb_13
+    OE2   HO2    gb_1
   ;carbonyl group linkage
-   N1    C1    gb_10   
+   N1    C1    gb_10
    C1    OD1    gb_5
-   C1    CF    gb_27  
+   C1    CF    gb_27
   ;phenyl group
 CF   CD1    gb_16
 CF   CD2    gb_16
@@ -550,7 +550,7 @@ CZ    HZ    gb_3
    -C     N    CA     ga_31
     H     N    CA     ga_18
     N    CA    CB     ga_13
-   CB    CA    CO     ga_13  
+   CB    CA    CO     ga_13
     N    CA    CO     ga_13
   CA    CO   OE1     ga_30
   CA    CO   OE2     ga_19
@@ -560,15 +560,15 @@ CZ    HZ    gb_3
    CB    CG    CD     ga_15
    CG    CD    CE     ga_15
    ; carbonyl linking the lysing and benzyl
-   CD    CE    N1     ga_13 
-   CE    N1    HN1     ga_18 
-   CE    N1    C1     ga_31 
-   HN1    N1    C1     ga_32 
-   N1    C1    OD1     ga_33 
-   OD1    C1    CF     ga_30 
-   C1    CF    CD1    ga_27  
-   C1    CF    CD2    ga_27  
-   N1    C1    CF     ga_19  
+   CD    CE    N1     ga_13
+   CE    N1    HN1     ga_18
+   CE    N1    C1     ga_31
+   HN1    N1    C1     ga_32
+   N1    C1    OD1     ga_33
+   OD1    C1    CF     ga_30
+   C1    CF    CD1    ga_27
+   C1    CF    CD2    ga_27
+   N1    C1    CF     ga_19
   ; benzyl group
   CD1    CF   CD2     ga_27
    CF   CD1   HD1     ga_25
@@ -585,8 +585,8 @@ CZ    HZ    gb_3
   CE1    CZ    HZ     ga_25
   CE2    CZ    HZ     ga_25
   ; second carbonyl group
-   CD1    CE1    C    ga_27  
-   CZ     CE1    C    ga_27  
+   CD1    CE1    C    ga_27
+   CZ     CE1    C    ga_27
    CE1    C     O     ga_30
    CE1     C    +N     ga_19
     O     C    +N     ga_33
@@ -594,7 +594,7 @@ CZ    HZ    gb_3
  [ impropers ]
 ;  ai    aj    ak    al   gromos type
     N    -C    CA     H     gi_1
-   CA     N     CO   CB     gi_2   
+   CA     N     CO   CB     gi_2
     CO   OE1   OE2    CA     gi_1
     ;carbonyl linkage part
     N1   HN1    C1    CE     gi_1
@@ -617,19 +617,19 @@ CE1  CD1   CZ     C      gi_1
 
  [ dihedrals ]
 ;  ai    aj    ak    al   gromos type
-  -CE1    -C     N    CA     gd_14 
-   -C     N    CA     CO    gd_39  
+  -CE1    -C     N    CA     gd_14
+   -C     N    CA     CO    gd_39
     N    CA    CB    CG     gd_34
    CB    CA    CO   OE2     gd_40
    CA    CO   OE2   HO2     gd_12
    CA    CB    CG    CD     gd_34
    CB    CG    CD    CE     gd_34
-   CG    CD    CE    N1     gd_34  
-   CE    N1    C1    CF     gd_14  
-   CD    CE    N1    C1     gd_39  
-   N1    C1    CF    CD1    gd_40  
-   CD1   CE1   C     +N     gd_40  
-   H1    N     CA    CB     gd_29  
+   CG    CD    CE    N1     gd_34
+   CE    N1    C1    CF     gd_14
+   CD    CE    N1    C1     gd_39
+   N1    C1    CF    CD1    gd_40
+   CD1   CE1   C     +N     gd_40
+   H1    N     CA    CB     gd_29
 
 [ MB0 ]
  [ atoms ]
@@ -639,11 +639,11 @@ CE1  CD1   CZ     C      gi_1
    CB   CH2     0.00000     1
    CG   CH2     0.00000     2
    CD   CH2     0.00000     2
-   CE   CH2     0.00000     3  
-   N1     NZ    -0.31000     3 
-   HN1     H     0.31000     3 
-   CO     C     0.45000     4  
-  OE1     O    -0.45000     4 
+   CE   CH2     0.00000     3
+   N1     NZ    -0.31000     3
+   HN1     H     0.31000     3
+   CO     C     0.45000     4
+  OE1     O    -0.45000     4
   N2     N    -0.31000     5
  HN2     H     0.31000     5
   CI   CH1     0.00000     6
@@ -678,8 +678,8 @@ CE1  CD1   CZ     C      gi_1
    CZ     C    -0.14000     19
    HZ    HC     0.14000     19
    ; carbonyl group
-  C     C       0.450     20 
-  O     O      -0.450     20  
+  C     C       0.450     20
+  O     O      -0.450     20
 
 
  [ bonds ]
@@ -690,13 +690,13 @@ CE1  CD1   CZ     C      gi_1
    CB    CG    gb_27
    CG    CD    gb_27
    CD    CE    gb_27
-   CE    N1    gb_21 
-   N1    HN1    gb_2  
-    CO     OE1    gb_5  
+   CE    N1    gb_21
+   N1    HN1    gb_2
+    CO     OE1    gb_5
   ;carbonyl group linkage
-   N1    C1    gb_10   
+   N1    C1    gb_10
    C1    OD1    gb_5
-   C1    CF    gb_27  
+   C1    CF    gb_27
   ;phenyl group
 CF   CD1    gb_16
 CF   CD2    gb_16
@@ -784,22 +784,22 @@ CZ    HZ    gb_3
    -C     N    CA     ga_31
     H     N    CA     ga_18
     N    CA    CB     ga_13
-   CB    CA    CO     ga_13  
+   CB    CA    CO     ga_13
     N    CA    CO     ga_13
   CA    CO   OE1     ga_30
    CA    CB    CG     ga_15
    CB    CG    CD     ga_15
    CG    CD    CE     ga_15
    ; carbonyl linking the lysing and benzyl
-   CD    CE    N1     ga_13 
-   CE    N1    HN1     ga_18 
-   CE    N1    C1     ga_31 
-   HN1    N1    C1     ga_32 
-   N1    C1    OD1     ga_33 
-   OD1    C1    CF     ga_30 
-   C1    CF    CD1    ga_27  
-   C1    CF    CD2    ga_27  
-   N1    C1    CF     ga_19  
+   CD    CE    N1     ga_13
+   CE    N1    HN1     ga_18
+   CE    N1    C1     ga_31
+   HN1    N1    C1     ga_32
+   N1    C1    OD1     ga_33
+   OD1    C1    CF     ga_30
+   C1    CF    CD1    ga_27
+   C1    CF    CD2    ga_27
+   N1    C1    CF     ga_19
   ; benzyl group
   CD1    CF   CD2     ga_27
    CF   CD1   HD1     ga_25
@@ -816,8 +816,8 @@ CZ    HZ    gb_3
   CE1    CZ    HZ     ga_25
   CE2    CZ    HZ     ga_25
   ; second carbonyl group
-   CD1    CE1    C    ga_27  
-   CZ     CE1    C    ga_27  
+   CD1    CE1    C    ga_27
+   CZ     CE1    C    ga_27
    CE1    C     O     ga_30
    CE1     C    +N     ga_19
     O     C    +N     ga_33
@@ -856,7 +856,7 @@ CZ    HZ    gb_3
  [ impropers ]
 ;  ai    aj    ak    al   gromos type
     N    -C    CA     H     gi_1
-   CA     N     CO   CB     gi_2   
+   CA     N     CO   CB     gi_2
     ;carbonyl linkage part
     N1   HN1    C1    CE     gi_1
     C1   OD1    N1    CF     gi_1
@@ -893,18 +893,18 @@ CE1  CD1   CZ     C      gi_1
   CO    CA    OE1   N2      gi_1
  [ dihedrals ]
 ;  ai    aj    ak    al   gromos type
-  -CE1    -C     N    CA     gd_14 
-   -C     N    CA     CO    gd_39  
+  -CE1    -C     N    CA     gd_14
+   -C     N    CA     CO    gd_39
     N    CA    CB    CG     gd_34
-   CB    CA    CO   OE1     gd_40    
+   CB    CA    CO   OE1     gd_40
    CA    CB    CG    CD     gd_34
    CB    CG    CD    CE     gd_34
-   CG    CD    CE    N1     gd_34  
-   CE    N1    C1    CF     gd_14  
-   CD    CE    N1    C1     gd_39  
-   N1    C1    CF    CD1    gd_40  
-   CD1   CE1   C     +N     gd_40  
-   H1    N     CA    CB     gd_29  
+   CG    CD    CE    N1     gd_34
+   CE    N1    C1    CF     gd_14
+   CD    CE    N1    C1     gd_39
+   N1    C1    CF    CD1    gd_40
+   CD1   CE1   C     +N     gd_40
+   H1    N     CA    CB     gd_29
    CA    CO    N2    CI     gd_14
    CO     N2    CI     CN     gd_39
     N2    CI    CJ    CK     gd_34
@@ -914,7 +914,7 @@ CE1  CD1   CZ     C      gi_1
    CO     N2    CI     CN    gd_39
 
 ########################################
-# changes needed for the c terminus
+# changes needed for the c terminus (.c.tdb)
 ########################################
 
 [ MA0-COO- ]
@@ -933,7 +933,7 @@ O1	C	O2	ga_38
 CE1	C	O1	ga_22
 CE1	C	O2	ga_22
 [ dihedrals ]
-CZ	CE1	C	O2	gd_40 
+CZ	CE1	C	O2	gd_40
 [ impropers ]
 C	CE1	O2	O1	gi_1
 
@@ -957,7 +957,7 @@ C	O	HO	ga_12
 CE1	C	O	ga_19
 CE1	C	OT	ga_30
 [ dihedrals ]
-CZ	CE1	C	O	gd_40  
+CZ	CE1	C	O	gd_40
 CE1	C	O	HO	gd_12
 [ impropers ]
 C	CE1	OT	O	gi_1
@@ -979,7 +979,7 @@ O1	C	O2	ga_38
 CE1	C	O1	ga_22
 CE1	C	O2	ga_22
 [ dihedrals ]
-CZ	CE1	C	O2	gd_40 
+CZ	CE1	C	O2	gd_40
 [ impropers ]
 C	CE1	O2	O1	gi_1
 
@@ -1003,7 +1003,7 @@ C	O	HO	ga_12
 CE1	C	O	ga_19
 CE1	C	OT	ga_30
 [ dihedrals ]
-CZ	CE1	C	O	gd_40  
+CZ	CE1	C	O	gd_40
 CE1	C	O	HO	gd_12
 [ impropers ]
 C	CE1	OT	O	gi_1
@@ -1025,7 +1025,7 @@ O1	C	O2	ga_38
 CE1	C	O1	ga_22
 CE1	C	O2	ga_22
 [ dihedrals ]
-CZ	CE1	C	O2	gd_40 
+CZ	CE1	C	O2	gd_40
 [ impropers ]
 C	CE1	O2	O1	gi_1
 
@@ -1049,7 +1049,7 @@ C	O	HO	ga_12
 CE1	C	O	ga_19
 CE1	C	OT	ga_30
 [ dihedrals ]
-CZ	CE1	C	O	gd_40  
+CZ	CE1	C	O	gd_40
 CE1	C	O	HO	gd_12
 [ impropers ]
 C	CE1	OT	O	gi_1
@@ -1070,7 +1070,7 @@ O1	C	O2	ga_38
 CE1	C	O1	ga_22
 CE1	C	O2	ga_22
 [ dihedrals ]
-CZ	CE1	C	O2	gd_40 
+CZ	CE1	C	O2	gd_40
 [ impropers ]
 C	CE1	O2	O1	gi_1
 
@@ -1094,7 +1094,7 @@ C	O	HO	ga_12
 CE1	C	O	ga_19
 CE1	C	OT	ga_30
 [ dihedrals ]
-CZ	CE1	C	O	gd_40  
+CZ	CE1	C	O	gd_40
 CE1	C	O	HO	gd_12
 [ impropers ]
 C	CE1	OT	O	gi_1
@@ -1102,7 +1102,7 @@ C	CE1	OT	O	gi_1
 
 
 ###################################
-# changes to the N terminus
+# changes to the N terminus (.n.tdb)
 ###################################
 [ MA0-NH3+ ]
 [ replace ]
@@ -1273,7 +1273,7 @@ CA	N	H2	ga_11
 H1	N	CA	CO	gd_29
 
 ########################################
-# changes to the hydrogens upon protonation
+# changes to the hydrogens upon protonation (.hdb)
 ########################################
 
 MA1     6

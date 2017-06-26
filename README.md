@@ -1,25 +1,35 @@
 # Scripts for Building and Simulating Lipid Systems
 
+## Overview
+
 scripting offers a
-great leap in efficiency and more importantly it would significantly reduce the level of random
-human errors, boosting reliabilities of the final results.
+great leap in efficiency and more importantly it would significantly reduce the level of random human errors, boosting reliabilities of the final results.
 
 Link to article will be
 after publication being accepted.
 
 
-## Getting Started
+## Prerequisites
+The scripts are written in Python 2.7, non-standard dependencies include `numpy`, `pandas` and `MDAnalysis` libraries, all of which are available via `conda install` or `pip install`.
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+## Directories summary
 
-### Prerequisites
-Python 2.7
+-  **./analyse**
 
-What things you need to install the software and how to install them
 
-```
-Give examples
-```
+-  **./config_create**
+
+
+-  **./plot**
+
+-  **./queue_handle**
+
+-  **./simdir_build**
+
+
+-  **./topology** *
+
+
 
 ## Author
 
