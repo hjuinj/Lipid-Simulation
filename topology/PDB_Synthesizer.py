@@ -26,9 +26,10 @@ def concat(u1, u2):
     u_comb = MDAnalysis.Merge(u1, u2)
     p1 = u_comb.select_atoms("bynum 1:%s" %str(len(u1)))
     p2 = u_comb.select_atoms("bynum %s:%s" %(str(len(u1) + 1), str(len(u1) + len(u2))))
-    p1.segids = "A"
-    p2.segids = "B"
-    p2.residues.set_resid(p2.residues.resids + p1.residues.resids[-1])
+    p1.segments.segids = "A"
+    p2.segments.segids = "B"
+    #p2.residues.set_resid(p2.residues.resids + p1.residues.resids[-1])
+    p2.residues.resids = (p2.residues.resids + p1.residues.resids[-1])
     return u_comb
 
 def construct(entry, write_to):
@@ -62,13 +63,13 @@ def construct(entry, write_to):
         # print N
         mer.atoms.positions = np.sum([mer.atoms.positions, N], axis = 0) + 1
         polymer = concat(polymer.atoms, mer.atoms)
-    polymer.atoms.segids = "A"
+    polymer.segments.segids = "A"
     polymer.atoms.write(write_to)
     return
 
 """
 Example usage:
 
-construct(["MB1"] * 5 , "./MB1x5.pdb")
-
+construct(["MB1"]*5  , "./MB1x5.pdb")
 """
+
